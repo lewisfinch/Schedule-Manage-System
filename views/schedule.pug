@@ -1,0 +1,110 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css', integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO', crossorigin='anonymous')
+    link(rel='stylesheet', href='/views/style.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49', crossorigin='anonymous')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy', crossorigin='anonymous')
+    title My Schedule
+  body
+    nav.navbar.navbar-expanded.navbar-light.bg-light.mb-5
+      ul.nav.nav-pills
+        li.nav-item
+          a.nav-link(href='index.html') Home
+        li.nav-item.active
+          a.nav-link.active(href='schedule.html') Schedule
+        li.nav-item
+          a.nav-link(href='addEvent.html')
+            | Add
+            | Event
+        li
+          img#logoutImg(src='/views/logout.png', style='width: 40px; height: 40px;', onclick='logout()')
+    .container.mb-5
+      .alert.alert-secondary(role='alert')
+        | Click on a day to see its events
+    .container.mb-3
+      ul#days.nav.nav-tabs.nav-fill
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Sunday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Monday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Tuesday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Wednesday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Thursday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Friday
+        li.nav-item
+          a.nav-link(onclick='formTable(this)') Saturday
+      br
+      br
+      .container
+        table#scheduleTable.table.table-striped
+          thead
+            tr
+              th(scope='col') Name
+              th(scope='col') Time
+              th(scope='col') Location
+              th(scope='col') Phone
+              th(scope='col') Extra Information
+          tbody
+    script.
+      function formTable(element) {
+      $('#days li a').removeClass("active");
+      $(element).addClass("active");
+      clearTable();
+      let day = $(element).text().toLowerCase();
+      fetch("/getSchedule?day=" + day)
+      .then(response => response.json())
+      .then(data => {
+      var table = $('#scheduleTable tbody');
+      data.forEach(each => {
+      var row = $('<tr></tr>');
+      row.attr('id', each.id);
+      row.append(`<td>${each.name}</td>`);
+      row.append(`<td>${each.start} - ${each.end}</td>`);
+      row.append(`<td>${each.location}</td>`);
+      row.append(`<td>${each.phone}</td>`);
+      row.append(`<td><a href="${each.url}">${each.info}</a><br><button class="DelButton", onclick="deleteRow('${each.id}')">Delete</button><button class="EdiButton", onclick="editEvent('${each.id}')">Edit</a></td>`);
+      table.append(row);
+      });
+      })
+      .catch(error => console.log("Request failed", error));
+      }
+      function logout() {
+      fetch("/logout")
+      .then(response => {
+      window.location.href = '/login';
+      console.log("Logged out");
+      })
+      .catch(error => console.log("Logout Failed", error));
+      }
+      function clearTable() {
+      $('#scheduleTable tbody').empty();
+      }
+      function deleteRow(value) {
+      if (window.confirm("Do you really want to delete this event?")) {
+      fetch(`/deleteEvent/${value}`)
+      .then(response => {
+      if (response.ok) {
+      console.log(`Successfully deleted row: ${value}`);
+      document.getElementById(`${value}`).remove();
+      } else {
+      console.log(`Row ${value} not deleted`);
+      }
+      })
+      .catch(error => console.log("Delete failed", error));
+      }
+      }
+      function editEvent(id) {
+      fetch(`/edit/${id}`)
+      .then(response => {
+      window.location.href = `/edit/${id}`;
+      })
+      .catch(error => console.log("Turn to Edit failed", error));
+      }

@@ -1,0 +1,82 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    title Welcome to Node.js
+    style(type='text/css').
+      .jumbotron {
+      text-align: center;
+      }
+      input[type=text],
+      input[type=password] {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      }
+  body
+    .jumbotron(style='background: DarkSeaGreen !important')
+      h1 Login Page
+      p Please enter your user name and password. Both are case sensitive
+      br
+      br
+    .row
+      .col-md-1
+      .col-md-10
+        form#login_form
+          label(for='username') User:
+          br
+          input#username(type='text', name='username', placeholder='Username', required='')
+          br
+          label(for='password') Password:
+          br
+          input#password(type='password', name='password', placeholder='Password', required='')
+          br
+          br
+          button.btn.btn-primary.btn-block(style='background-color: green; border-color: darkgreen', type='submit', value='Submit') Log in
+          button.btn.btn-primary.btn-block(type='button', onclick='createAcc()') Register
+          p#error(style='display:none; border: 1px solid red; margin: 5%; background-color: pink; padding: 2%;') Login Error: Try Again
+        script.
+          document.getElementById("login_form").addEventListener("submit", function (e) {
+          e.preventDefault();
+          var username = document.getElementById("username").value;
+          var password = document.getElementById("password").value;
+          fetch("/sendLoginDetails", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+          username: username,
+          password: password
+          })
+          })
+          .then(response => response.json())
+          .then(data => {
+          if (data.status === 'success') {
+          window.location.href = '/schedule';
+          } else {
+          const errorParagraph = document.getElementById('error');
+          errorParagraph.style.display = 'block';
+          const usernameField = document.getElementById('user');
+          const passwordField = document.getElementById('password');
+          usernameField.value = "";
+          passwordField.value = "";
+          }
+          })
+          .catch(error => {
+          console.error("Login Error");
+          });
+          })
+          function createAcc() {
+          fetch("/createAccount")
+          .then(response => {
+          window.location.href = "/createAccount";
+          })
+          .catch(error => console.log("Redirect to Registration page failed", error));
+          }
+      .col-md-1

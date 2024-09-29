@@ -1,0 +1,52 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    title Welcome to Node.js
+    style(type='text/css').
+      .jumbotron {
+      text-align: center;
+      }
+  body
+    .jumbotron(style='background: DarkSeaGreen !important')
+      h1 Welcome to Express (Node.js)
+      p The objective of this assignment is to develop a basic website with:
+      p
+        b Express
+        |  which is a Node.js web application framework.
+      br
+      p Following are some useful resources:
+      ul(style='list-style-type:none')
+        li
+          a(href='https://expressjs.com/') Express website
+        li
+          a(href='https://expressjs.com/en/starter/installing.html') Express installation
+        li
+          a(href='https://expressjs.com/en/starter/hello-world.html') Hello world example
+        li
+          a(href='https://expressjs.com/en/starter/basic-routing.html') Basic routing
+        li
+          a(href='https://expressjs.com/en/starter/static-files.html') Serving static files in Express
+        li
+          a(href='https://expressjs.com/en/starter/faq.html') FAQ
+        li
+          a(href='https://expressjs.com/en/guide/routing.html') Routing
+        li
+          a(href='https://expressjs.com/en/4x/api.html') API Reference
+        li
+          a(href='https://expressjs.com/en/resources/books-blogs.html') Books and blogs
+        li
+          a(href='https://docs.npmjs.com/getting-started/what-is-npm') NPM introduction
+        li Building a Website with Node.js and Express.js (lynda umn)
+      br
+      br
+    .row
+      .col-md-1
+      .col-md-10
+        button#myButton.btn.btn-primary.btn-block(type='button', onclick="location.href ='/login'")
+          | Navigate to website
+      .col-md-1

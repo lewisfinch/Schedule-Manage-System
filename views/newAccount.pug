@@ -1,0 +1,105 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    style(type='text/css').
+      .jumbotron {
+      text-align: center;
+      color: white;
+      }
+      input[type=text],
+      input[type=password],
+      input[type=email] {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      }
+    title Create Account
+  body
+    .jumbotron(style='background: rgb(60, 93, 155) !important')
+      h1 Create Account
+      p Please enter your Email and password to create a new account
+      br
+      br
+    .row
+      .col-md-1
+      .col-md-10
+        form#register_form
+          label(for='email') Email:
+          br
+          input#email(type='email', name='email', placeholder='email', required='')
+          br
+          label(for='password') Password:
+          br
+          input#password(type='password', name='password', placeholder='Password', required='')
+          br
+          label(for='passwordCon') Confirm Your Password:
+          br
+          input#passwordCon(type='password', name='passwordCon', placeholder='Please enter your password again', required='')
+          br
+          br
+          button.btn.btn-primary.btn-block(type='submit', value='Submit') Register
+          button.btn.btn-primary.btn-block(style='background-color: green; border-color: darkgreen' type='button', onclick="login()") Login
+          p#error(style='display:none; border: 1px solid red; margin: 5%; background-color: pink; padding: 2%;') Please confirm your password
+          p#error2(style='display:none; border: 1px solid red; margin: 5%; background-color: pink; padding: 2%;') Email already registered
+          p#error3(style='display:none; border: 1px solid red; margin: 5%; background-color: pink; padding: 2%;') Registration Failed: Unknown Error
+      .col-md-1
+    script.
+      document.getElementById("register_form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var passwordCon = document.getElementById("passwordCon").value;
+      if (password !== passwordCon) {
+      const errorParagraph = document.getElementById('error');
+      errorParagraph.style.display = 'block';
+      const passwordField = document.getElementById('password');
+      const passwordConField = document.getElementById('passwordCon');
+      passwordField.value = "";
+      passwordConField.value = "";
+      } else {
+      fetch("/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+      email: email,
+      password: password
+      })
+      })
+      .then(response => response.json())
+      .then(data => {
+      if (data.status === 'success') {
+      window.location.href = '/schedule';
+      } else if (data.status === 'repeat') {
+      const errorParagraph2 = document.getElementById('error2');
+      errorParagraph2.style.display = 'block';
+      const emailField = document.getElementById('email');
+      const passwordField = document.getElementById('password');
+      const passwordConField = document.getElementById('passwordCon');
+      emailField.value = "";
+      passwordField.value = "";
+      passwordConField.value = "";
+      } else {
+      const errorParagraph3 = document.getElementById('error3');
+      errorParagraph3.style.display = 'block';
+      }
+      })
+      .catch(error => {
+      console.error("Registration Failed: Unknown Error");
+      });
+      }
+      })
+      function login() {
+      fetch("/login")
+      .then(response => {
+      window.location.href = "/login";
+      })
+      .catch(error => console.log("Redirect to Login page failed", error));
+      }

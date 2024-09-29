@@ -1,0 +1,24 @@
+
+.DelButton, .EdiButton{
+  display: none;
+}
+
+tr:hover .EdiButton,
+tr:hover .DelButton {
+  display: inline-block;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 1%;
+}
+
+.DelButton{
+  background-color: #cc3300;
+}
+
+.EdiButton{
+  background-color: #70dbdb;
+}

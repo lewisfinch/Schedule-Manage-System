@@ -1,0 +1,107 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css', integrity='sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO', crossorigin='anonymous')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', integrity='sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49', crossorigin='anonymous')
+    script(src='https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', integrity='sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy', crossorigin='anonymous')
+    title Add Event
+  body
+    nav.navbar.navbar-expanded.navbar-light.bg-light
+      ul.nav.nav-pills
+        li.nav-item
+          a.nav-link(href='index.html') Home
+        li.nav-item
+          a.nav-link(href='schedule.html') Schedule
+        li.nav-item.active
+          a.nav-link.active(href='addEvent.html')
+            | Add
+            | Event
+        li
+          img#logoutImg(src='/views/logout.png', style='width: 40px; height: 40px; margin-left: 30%;', onclick='logout()')
+    br
+    br
+    .container.mb-5
+      form#addEvent(name='addEvent', method='post', action='/postEventEntry')
+        .form-group
+          label(for='nameInput') Event
+          input#nameInput.form-control(type='text', name='event', pattern='[a-zA-Z0-9\s]+', title='Event must be alphanumeric', required='')
+          small#eventHelp.form-text.text-muted
+            | Event name must be alphanumeric
+        .form-group
+          label(for='dayInput') Day of Week
+          select#dayInput.form-control(name='day')
+            option
+              | Sunday
+            option
+              | Monday
+            option
+              | Tuesday
+            option
+              | Wednesday
+            option
+              | Thursday
+            option
+              | Friday
+            option
+              | Saturday
+        .form-group
+          label(for='startTimeInput') Start
+          input#startTimeInput.form-control(type='time', name='start', required='')
+        .form-group
+          label(for='endTimeInput') End
+          input#endTimeInput.form-control(type='time', name='end', required='')
+        .form-group
+          label(for='phoneInput') Phone
+          input#phoneInput.form-control(type='text', name='phone', required='')
+        .form-group
+          label(for='locationInput') Location
+          input#locationInput.form-control(type='text', name='location', required='', value='')
+        .form-group
+          label(for='extraInput') Extra Info
+          input#extraInput.form-control(type='text', name='info', required='')
+        .form-group
+          label(for='urlInput') Enter URL for the Extra Info
+          input#urlInput.form-control(type='url', name='url', required='')
+        button.btn.btn-block.btn-primary(type='submit') Submit
+        button.btn.btn-block.btn-secondary(type='button', onclick='checkOverlap()', data-toggle='tooltip', data-placement='top', title='Checks if this event interferes with any on your existing schedule')
+          | Check for
+          | Overlap
+        br
+        #overlapAlert.container.mt-3
+    script.
+      function createAlert(count, events) {
+      let listItems = events.map((event) =>
+      `<li class="list-group-item">${event.name} from ${event.start} to ${event.end}`)
+      .join('');
+      let newHtml = `
+      <div class="alert alert-warning" role="alert" >
+      This event interferes with ${count} others:
+      <ul class="list-group">
+      ${listItems}
+      </ul>
+      </div>
+      `;
+      $('#overlapAlert').html(newHtml);
+      }
+      function logout() {
+      fetch("/logout")
+      .then(response => {
+      window.location.href = '/login';
+      console.log("Logged out");
+      })
+      .catch(error => console.log("Logout Failed", error));
+      }
+      function removeAlert() {
+      let newHtml = `
+      <div class="alert alert-success" role="alert">
+      This event does not interfere with any others.
+      </div>`;
+      $('#overlapAlert').html(newHtml);
+      }
+      //TODO: if doing the bonus, complete checking for overlap
+      function checkOverlap() {
+      return;
+      }
